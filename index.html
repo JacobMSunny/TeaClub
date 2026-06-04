@@ -1,1 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="theme-color" content="#c8813a"/>
+<title>☕ Tea Club</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --tea:#c8813a;--tea-light:#e8a84f;--tea-dim:#c8813a22;
+  --bg:#0f1117;--card:#161b26;--card2:#1a1f2e;
+  --text:#f0ece4;--muted:#6b7280;
+  --green:#4ade80;--red:#f87171;--blue:#60a5fa;--orange:#fb923c;--purple:#a78bfa;--yellow:#fbbf24;
+  --border:#ffffff14;
+}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:430px;margin:0 auto;}
+.header{background:linear-gradient(135deg,#c8813a,#e8a84f,#c8813a);padding:16px 16px 12px;text-align:center;position:sticky;top:0;z-index:50;box-shadow:0 4px 24px #0009;}
+.header h1{font-size:20px;font-weight:900;color:#1a0e00;}
+.header p{font-size:9px;color:#5a3500;letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#13181f;border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:6px 0 10px;z-index:50;}
+.nav-btn{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 6px;border-radius:10px;}
+.nav-btn.active{background:var(--tea-dim);}
+.nav-btn .icon{font-size:18px;}
+.nav-btn .label{font-size:9px;font-weight:700;color:var(--muted);}
+.nav-btn.active .label{color:var(--tea);}
+.page{display:none;padding:12px 13px 88px;animation:fadeIn .2s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.balance-card{background:linear-gradient(135deg,var(--tea-dim),#c8813a08);border:1.5px solid #c8813a44;border-radius:16px;padding:18px;text-align:center;margin-bottom:12px;}
+.balance-card .lbl{font-size:10px;color:var(--tea);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;}
+.balance-card .amt{font-size:38px;font-weight:900;letter-spacing:-1px;}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;}
+.stat-card{border-radius:13px;padding:12px;text-align:center;}
+.stat-card .slabel{font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;}
+.stat-card .samount{font-size:19px;font-weight:900;}
+.stat-card .scount{font-size:10px;color:var(--muted);margin-top:2px;}
+.green-card{background:#1b3328;}.red-card{background:#321b1b;}.blue-card{background:#1a2340;}.purple-card{background:#221a38;}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:18px;}
+.btn{border:none;border-radius:12px;padding:12px 10px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:opacity .15s,transform .1s;}
+.btn:active{opacity:.8;transform:scale(.97);}
+.btn-tea{background:var(--tea);color:#fff;}.btn-blue{background:#2563eb;color:#fff;}
+.btn-red{background:#dc2626;color:#fff;}.btn-orange{background:#c2410c;color:#fff;}
+.btn-purple{background:#7c3aed;color:#fff;}.btn-yellow{background:#b45309;color:#fff;}
+.btn-green{background:#15803d;color:#fff;}.btn-muted{background:#374151;color:#fff;}
+.btn-full{width:100%;margin-top:14px;padding:13px;font-size:14px;}
+.btn-ghost{background:none;border:1px solid #c8813a44;color:var(--tea);width:100%;margin-top:8px;font-family:'Nunito',sans-serif;border-radius:12px;padding:10px;cursor:pointer;font-size:13px;font-weight:700;}
+.btn-sm{padding:5px 11px;font-size:11px;border-radius:8px;margin-top:0;}
+.section-title{font-size:17px;font-weight:900;margin-bottom:14px;}
+.field-label{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin:12px 0 4px;}
+select,input[type=text],input[type=number],input[type=date],textarea{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-size:14px;font-family:'Nunito',sans-serif;outline:none;-webkit-appearance:none;appearance:none;}
+textarea{resize:vertical;min-height:70px;}
+select:focus,input:focus,textarea:focus{border-color:#c8813a66;}
+.readonly-field{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;font-size:14px;color:var(--tea);font-weight:700;}
+.role-toggle{display:grid;grid-template-columns:1fr 1fr;gap:0;background:var(--card2);border-radius:11px;padding:3px;margin-bottom:4px;}
+.role-opt{background:none;border:none;border-radius:8px;padding:9px;font-size:12px;font-weight:700;cursor:pointer;color:var(--muted);font-family:'Nunito',sans-serif;transition:all .2s;}
+.role-opt.selected{background:var(--tea);color:#fff;}
+.tx-row{display:flex;align-items:flex-start;gap:9px;background:var(--card);border-radius:11px;padding:10px 12px;margin-bottom:7px;position:relative;}
+.tx-row.disputed{border:1px solid #f8717166;}
+.tx-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+.tx-info{flex:1;min-width:0;}
+.tx-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tx-sub{font-size:10px;color:var(--muted);margin-top:1px;}
+.tx-right{text-align:right;flex-shrink:0;}
+.tx-amount{font-size:13px;font-weight:900;}
+.tx-actions{display:flex;gap:6px;justify-content:flex-end;margin-top:3px;}
+.del-btn{background:none;border:none;color:#374151;cursor:pointer;font-size:11px;font-family:'Nunito',sans-serif;}
+.dispute-btn{background:none;border:none;color:#b45309;cursor:pointer;font-size:11px;font-family:'Nunito',sans-serif;}
+.dispute-flag{font-size:10px;color:var(--red);margin-top:3px;font-weight:700;}
+.member-card{background:var(--card2);border-radius:13px;padding:11px 13px;margin-bottom:7px;display:flex;align-items:center;gap:11px;}
+.member-avatar{width:36px;height:36px;border-radius:50%;background:var(--tea-dim);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:var(--tea);flex-shrink:0;}
+.member-avatar.handler{background:#2e1f5e;color:var(--purple);}
+.member-avatar.pending{background:#2a1a1a;color:var(--red);}
+.member-info{flex:1;min-width:0;}
+.member-name-row{font-size:13px;font-weight:800;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.member-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:9px;font-weight:800;letter-spacing:.5px;}
+.badge-active{background:#1b3328;color:var(--green);}
+.badge-leave{background:#3a2a0e;color:var(--orange);}
+.badge-left{background:#2a1a1a;color:var(--red);}
+.badge-handler{background:#2e1f5e;color:var(--purple);}
+.badge-member{background:#1b2a3a;color:var(--blue);}
+.badge-admin{background:#3a2a0e;color:var(--yellow);}
+.badge-pending{background:#2a1a1a;color:var(--red);}
+.badge-angel{background:#1a2040;color:#818cf8;}
+.badge-ghost{background:#2a1a2a;color:#e879f9;}
+.liability-card{background:var(--card2);border-radius:13px;padding:13px 15px;margin-bottom:7px;}
+.liability-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-top:1px solid var(--border);font-size:12px;}
+.modal-overlay{position:fixed;inset:0;background:#000b;z-index:100;display:flex;align-items:flex-end;justify-content:center;}
+.modal-box{background:#1a1f2e;border-radius:20px 20px 0 0;padding:20px 18px 34px;width:100%;max-width:430px;animation:slideUp .25s ease;max-height:88vh;overflow-y:auto;}
+@keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-title{font-size:16px;font-weight:900;margin-bottom:16px;}
+.modal-close{float:right;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;margin-top:-4px;}
+.comment-row{background:var(--card);border-radius:9px;padding:9px 11px;margin-bottom:6px;}
+.comment-author{font-size:11px;font-weight:800;color:var(--tea);}
+.comment-text{font-size:12px;margin-top:2px;}
+.comment-time{font-size:10px;color:var(--muted);margin-top:2px;}
+.sub-heading{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px;}
+.empty{text-align:center;color:#374151;padding:28px 0;font-size:13px;}
+.toast{position:fixed;top:68px;left:50%;transform:translateX(-50%);padding:9px 22px;border-radius:20px;font-size:12px;font-weight:700;z-index:300;box-shadow:0 4px 20px #0007;white-space:nowrap;animation:toastIn .25s ease;}
+@keyframes toastIn{from{opacity:0;top:58px}to{opacity:1;top:68px}}
+.toast.ok{background:#166534;color:#d1fae5;}.toast.err{background:#7f1d1d;color:#fecaca;}
+.spinner{border:3px solid var(--border);border-top-color:var(--tea);border-radius:50%;width:26px;height:26px;animation:spin .7s linear infinite;margin:36px auto;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.info-box{background:#1e2a1e;border:1px solid #4ade8033;border-radius:9px;padding:9px 12px;font-size:11px;color:#86efac;margin-bottom:11px;line-height:1.6;}
+.warn-box{background:#2a1e1e;border:1px solid #f8717133;border-radius:9px;padding:9px 12px;font-size:11px;color:#fca5a5;margin-bottom:11px;line-height:1.6;}
+.purple-box{background:#1e1a2e;border:1px solid #a78bfa33;border-radius:9px;padding:9px 12px;font-size:11px;color:#c4b5fd;margin-bottom:11px;line-height:1.6;}
+.yellow-box{background:#2a1e0e;border:1px solid #fbbf2433;border-radius:9px;padding:9px 12px;font-size:11px;color:#fcd34d;margin-bottom:11px;line-height:1.6;}
+.divider{border:none;border-top:1px solid var(--border);margin:11px 0;}
+.login-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 22px;}
+.login-logo{font-size:52px;margin-bottom:8px;}
+.login-title{font-size:22px;font-weight:900;color:var(--tea);margin-bottom:3px;}
+.login-sub{font-size:11px;color:var(--muted);letter-spacing:1.5px;margin-bottom:26px;}
+.config-box{background:#1a1f2e;border:1px solid #c8813a33;border-radius:13px;padding:16px;margin-bottom:13px;}
+.step{display:flex;align-items:flex-start;margin-bottom:12px;}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--tea);color:#fff;font-size:11px;font-weight:900;margin-right:8px;flex-shrink:0;}
+.step-text{font-size:12px;color:var(--muted);line-height:1.65;flex:1;}
+.step-text b{color:var(--text);}
+.input-mono{font-family:monospace;font-size:12px;background:#0f1117;border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--tea-light);width:100%;margin-top:7px;outline:none;}
+code{background:#0f1117;color:var(--tea-light);padding:2px 5px;border-radius:4px;font-size:11px;}
+.cash-bar{background:var(--card2);border-radius:13px;padding:12px 14px;margin-bottom:10px;}
+.cash-bar-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-top:1px solid var(--border);font-size:12px;}
+.pending-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 22px;text-align:center;}
+</style>
+</head>
+<body>
 
+<!-- CONFIG -->
+<div id="config-screen" style="display:none;padding:18px 14px 40px;">
+  <div style="text-align:center;padding:20px 0 18px;">
+    <div style="font-size:44px;">☕</div>
+    <div style="font-size:19px;font-weight:900;color:var(--tea);margin-top:5px;">Tea Club Setup</div>
+  </div>
+  <div class="config-box">
+    <div class="step"><span class="step-num">1</span><div class="step-text">Go to <b>console.firebase.google.com</b> → Create project → Disable Analytics.</div></div>
+    <div class="step"><span class="step-num">2</span><div class="step-text"><b>Realtime Database</b> → Create Database → Test mode.</div></div>
+    <div class="step"><span class="step-num">3</span><div class="step-text"><b>Project Settings → Your apps → &lt;/&gt; Web</b> → copy the <code>databaseURL</code>.</div></div>
+    <div class="step"><span class="step-num">4</span><div class="step-text">Paste below. <b>First person to log in becomes Admin.</b></div></div>
+  </div>
+  <div class="field-label">Firebase Database URL</div>
+  <input class="input-mono" id="db-url-input" type="url" placeholder="https://your-project-default-rtdb.firebaseio.com"/>
+  <button class="btn btn-tea btn-full" onclick="saveFirebaseConfig()">Save & Continue</button>
+</div>
+
+<!-- LOGIN -->
+<div id="login-screen" style="display:none;">
+  <div class="login-wrap">
+    <div class="login-logo">☕</div>
+    <div class="login-title">Tea Club</div>
+    <div class="login-sub">ETTUMANOOR BRANCH</div>
+    <div class="field-label" style="width:100%;max-width:320px;">Your Name</div>
+    <input type="text" id="member-name-input" placeholder="Enter your full name" style="max-width:320px;" autocomplete="off" autocapitalize="words" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <div class="field-label" style="width:100%;max-width:320px;">Join As</div>
+    <div class="role-toggle" style="max-width:320px;">
+      <button class="role-opt selected" id="role-member-btn" onclick="selectRole('member')">👤 Club Member</button>
+      <button class="role-opt" id="role-handler-btn" onclick="selectRole('handler')">🧾 Expense Handler</button>
+    </div>
+    <div id="role-desc" style="max-width:320px;font-size:10px;color:var(--muted);margin-top:5px;margin-bottom:14px;line-height:1.6;">Club Members contribute funds and share expenses.</div>
+    <button class="btn btn-tea btn-full" style="max-width:320px;" onclick="doLogin()">Request to Join →</button>
+    <button onclick="showConfig()" style="background:none;border:none;color:var(--muted);font-size:10px;margin-top:18px;cursor:pointer;font-family:'Nunito',sans-serif;">⚙ Firebase settings</button>
+  </div>
+</div>
+
+<!-- PENDING -->
+<div id="pending-screen" style="display:none;">
+  <div class="pending-screen">
+    <div style="font-size:48px;margin-bottom:12px;">⏳</div>
+    <div style="font-size:18px;font-weight:900;color:var(--yellow);margin-bottom:8px;">Awaiting Approval</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;">Your request to join the Tea Club has been sent to the Admin. Please wait for approval.</div>
+    <div style="font-size:12px;color:var(--muted);">You are joining as: <b id="pending-name" style="color:var(--text);"></b></div>
+    <button onclick="checkApproval()" class="btn btn-tea" style="margin-top:24px;padding:12px 28px;">Check Status</button>
+    <button onclick="logoutPending()" style="background:none;border:none;color:var(--muted);font-size:11px;margin-top:14px;cursor:pointer;font-family:'Nunito',sans-serif;">← Back / Change name</button>
+  </div>
+</div>
+
+<!-- LOADING SCREEN -->
+<div id="loading-screen" style="display:none;">
+  <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;">
+    <div style="font-size:48px;margin-bottom:16px;">☕</div>
+    <div style="border:3px solid #ffffff14;border-top-color:#c8813a;border-radius:50%;width:32px;height:32px;animation:spin .7s linear infinite;margin-bottom:16px;"></div>
+    <div style="font-size:13px;color:#6b7280;">Connecting to Tea Club…</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none;">
+  <div class="header">
+    <h1>☕ Tea Club</h1>
+    <p id="header-sub">Ettumanoor Branch</p>
+  <p id="sync-status" style="font-size:9px;color:#5a3500;letter-spacing:1px;"></p>
+  </div>
+  <div id="toast" class="toast" style="display:none;"></div>
+  <div id="modal-overlay" class="modal-overlay" style="display:none;" onclick="closeModal(event)">
+    <div class="modal-box"><button class="modal-close" onclick="closeModal()">✕</button><div id="modal-content"></div></div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <!-- DEBUG PANEL BUTTON (admin only) -->
+    <div id="debug-btn-wrap" style="display:none;margin-bottom:10px;">
+      <button onclick="openDebugModal()" style="width:100%;background:#1a1f2e;border:1px solid #ffffff22;border-radius:10px;padding:10px;font-size:12px;color:#6b7280;cursor:pointer;font-family:Nunito,sans-serif;">🔧 Debug Panel (Admin)</button>
+    </div>
+    <div id="install-hint" style="display:none;">
+      <div style="background:#1e2a1e;border:1px solid #4ade8033;border-radius:13px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:24px;">📲</span>
+        <div style="flex:1;font-size:11px;color:#86efac;line-height:1.6;"><b style="color:#d1fae5;display:block;">Add to Home Screen</b>Tap browser Share/Menu → "Add to Home Screen" for app-like access.</div>
+        <button onclick="dismissInstall()" style="background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;">✕</button>
+      </div>
+    </div>
+    <!-- Admin pending approvals alert -->
+    <div id="admin-alert" style="display:none;" class="yellow-box">⚠️ <b id="admin-alert-text"></b> — go to Members page to approve.</div>
+    <!-- Reset approval banner — visible to ALL members when a reset is pending -->
+    <div id="reset-alert" style="display:none;background:#2a1a1a;border:1px solid #f8717155;border-radius:13px;padding:13px 15px;margin-bottom:12px;">
+      <div style="font-size:12px;font-weight:900;color:var(--red);margin-bottom:6px;">⚠️ Transaction Reset Requested</div>
+      <div id="reset-alert-body" style="font-size:12px;color:#fca5a5;line-height:1.7;margin-bottom:10px;"></div>
+      <div id="reset-alert-btns"></div>
+    </div>
+    <div class="balance-card">
+      <div class="lbl">Club Cash Balance</div>
+      <div class="amt" id="dash-balance" style="color:#f0ece4;">₹0.00</div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:10px;">
+        <button onclick="openCashHoldingsModal()" style="background:#c8813a33;border:1px solid #c8813a66;border-radius:8px;padding:5px 14px;font-size:11px;color:#f0ece4;cursor:pointer;font-family:Nunito,sans-serif;font-weight:700;">💵 Cash Holders</button>
+        <button onclick="forceRefresh()" style="background:#c8813a33;border:1px solid #c8813a66;border-radius:8px;padding:5px 14px;font-size:11px;color:#f0ece4;cursor:pointer;font-family:Nunito,sans-serif;font-weight:700;">🔄 Refresh</button>
+      </div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card green-card"><div class="slabel" style="color:var(--green);">Total Funds</div><div class="samount" style="color:var(--green);" id="dash-funds">₹0</div><div class="scount" id="dash-funds-count">0 entries</div></div>
+      <div class="stat-card red-card"><div class="slabel" style="color:var(--red);">Expenses</div><div class="samount" style="color:var(--red);" id="dash-exp">₹0</div><div class="scount" id="dash-exp-count">0 entries</div></div>
+    </div>
+    <div id="my-account-card" style="display:none;background:var(--card2);border-radius:13px;padding:13px 15px;margin-bottom:12px;">
+      <div style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;">My Account</div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:var(--muted);">My Contributions</span><span style="color:var(--green);font-weight:800;" id="my-contrib">₹0</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:var(--muted);">My Expense Share</span><span style="color:var(--red);font-weight:800;" id="my-share">₹0</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:var(--muted);">Cash I'm Holding</span><span style="color:var(--blue);font-weight:800;" id="my-holding">₹0</span></div>
+      <hr class="divider">
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="font-weight:700;">Net Balance</span><span style="font-weight:900;" id="my-balance-val">₹0</span></div>
+    </div>
+    <div id="handler-info-card" style="display:none;" class="purple-box">🧾 You are an <b>Expense Handler</b>. Record expenses for the club. No fund or liability involvement.</div>
+    <div class="quick-grid" id="dash-quick">
+      <button class="btn btn-tea" id="dash-fund-btn" onclick="goTo('fund')">+ Add Fund</button>
+      <button class="btn btn-blue" onclick="goTo('expense')">+ Expense</button>
+    </div>
+    <div class="sub-heading">Recent Activity</div>
+    <div id="dash-recent"><div class="spinner"></div></div>
+  </div>
+
+  <!-- FUND PAGE -->
+  <div class="page" id="page-fund">
+    <div class="section-title">Add Fund</div>
+    <div id="fund-handler-notice" class="purple-box" style="display:none;">🧾 Expense Handlers cannot add funds.</div>
+    <div id="fund-form-wrap">
+      <!-- Fund type -->
+      <div class="field-label">Fund Type</div>
+      <div class="role-toggle" style="grid-template-columns:1fr 1fr;">
+        <button class="role-opt selected" id="ftype-regular-btn" onclick="selectFundType('regular')">💰 Regular</button>
+        <button class="role-opt" id="ftype-angel-btn" onclick="selectFundType('angel')">👼 Angel Fund</button>
+      </div>
+      <div id="angel-info" style="display:none;" class="info-box" style="margin-top:6px;">👼 Angel Fund: contributed by a guest. Added to total balance but does not reduce any member's liability.</div>
+      <div class="field-label" id="fund-from-label">From (Member)</div>
+      <div class="readonly-field" id="fund-member-display"></div>
+      <div id="angel-from-wrap" style="display:none;">
+        <div class="field-label">Donor Name</div>
+        <input type="text" id="angel-donor" placeholder="e.g. Mr. Rajan (Guest)"/>
+      </div>
+      <div class="field-label">Amount (₹)</div>
+      <input type="number" id="fund-amount" placeholder="0.00" min="1"/>
+      <div class="field-label">Cash Handed To</div>
+      <select id="fund-handedto"><option value="">— Select who is holding this cash —</option></select>
+      <div class="field-label">Note (optional)</div>
+      <input type="text" id="fund-note" placeholder="e.g. Monthly contribution"/>
+      <button class="btn btn-tea btn-full" onclick="addFund()">✓ Add Fund</button>
+    </div>
+    <div class="sub-heading">Cash Holdings</div>
+    <div id="cash-holdings-summary"></div>
+    <button class="btn-ghost" onclick="openHandoverModal()">↔ Record Cash Handover</button>
+    <button class="btn-ghost" style="margin-top:6px;" onclick="openFundTransferModal()">💸 Transfer My Funds to Another Member</button>
+    <div class="sub-heading">Recent Contributions</div>
+    <div id="fund-list"><div class="spinner"></div></div>
+  </div>
+
+  <!-- EXPENSE PAGE -->
+  <div class="page" id="page-expense">
+    <div class="section-title">Record Expense</div>
+    <!-- Expense type -->
+    <div class="field-label">Expense Type</div>
+    <div class="role-toggle" style="grid-template-columns:1fr 1fr;">
+      <button class="role-opt selected" id="etype-regular-btn" onclick="selectExpType('regular')">🧾 Regular</button>
+      <button class="role-opt" id="etype-ghost-btn" onclick="selectExpType('ghost')">👻 Ghost</button>
+    </div>
+    <div id="ghost-info" style="display:none;" class="purple-box">👻 Ghost Expense: deducted from total club balance but NOT added to any member's individual liability.</div>
+    <div class="field-label">Category</div>
+    <select id="exp-category" onchange="toggleCustomCategory()">
+      <option value="Tea/Coffee">Tea/Coffee</option>
+      <option value="Snacks">Snacks</option>
+      <option value="Sugar & Milk">Sugar &amp; Milk</option>
+      <option value="Cups & Supplies">Cups &amp; Supplies</option>
+      <option value="Other">Other (specify below)</option>
+    </select>
+    <div id="custom-category-wrap" style="display:none;">
+      <div class="field-label">Specify Category</div>
+      <input type="text" id="exp-custom-category" placeholder="e.g. Gas cylinder…"/>
+    </div>
+    <div class="field-label">Amount (₹)</div>
+    <input type="number" id="exp-amount" placeholder="0.00" min="1"/>
+    <div class="field-label">Recorded By</div>
+    <div class="readonly-field" id="exp-paidby-display"></div>
+    <div class="field-label">Details (optional)</div>
+    <input type="text" id="exp-note" placeholder="e.g. 2kg Brooke Bond tea"/>
+    <button class="btn btn-blue btn-full" onclick="addExpense()">✓ Record Expense</button>
+    <div class="sub-heading">Recent Expenses</div>
+    <div id="exp-list"><div class="spinner"></div></div>
+  </div>
+
+  <!-- HISTORY PAGE -->
+  <div class="page" id="page-history">
+    <div class="section-title">History</div>
+    <div class="field-label">Filter by Member</div>
+    <select id="history-filter" onchange="renderHistory()"><option value="All">All</option></select>
+    <div id="history-count" style="font-size:11px;color:var(--muted);margin:7px 0 9px;"></div>
+    <div id="history-list"><div class="spinner"></div></div>
+  </div>
+
+  <!-- MEMBERS PAGE -->
+  <div class="page" id="page-members">
+    <div class="section-title">Members</div>
+    <!-- Pending approvals (admin only) -->
+    <div id="pending-approvals-section" style="display:none;">
+      <div class="sub-heading" style="color:var(--yellow);">⏳ Pending Approvals</div>
+      <div id="pending-approvals-list"></div>
+    </div>
+    <!-- My status -->
+    <div style="background:var(--card2);border-radius:12px;padding:11px 13px;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+        <div><div style="font-size:13px;font-weight:800;" id="my-status-name"></div><div style="font-size:10px;color:var(--muted);margin-top:2px;" id="my-status-label"></div></div>
+        <div id="my-status-btns" style="display:flex;gap:5px;flex-wrap:wrap;"></div>
+      </div>
+    </div>
+    <div id="members-list"><div class="spinner"></div></div>
+    <div class="sub-heading">Liability Summary</div>
+    <div id="liability-summary"></div>
+    <div class="sub-heading">Expense by Category</div>
+    <div id="cat-summary"></div>
+  </div>
+
+  <!-- RESET SECTION (admin only) -->
+  <div id="reset-section" style="display:none;padding:0 13px 20px;">
+    <div class="sub-heading" style="color:var(--red);">⚠️ Admin: Reset Transactions</div>
+    <div id="reset-status-box"></div>
+    <button class="btn btn-red" style="width:100%;padding:12px;font-size:13px;" onclick="openResetModal()">Request Transaction Reset</button>
+  </div>
+
+  <nav class="nav">
+    <button class="nav-btn active" data-page="dashboard" onclick="goTo('dashboard')"><span class="icon">⌂</span><span class="label">Home</span></button>
+    <button class="nav-btn" data-page="fund" onclick="goTo('fund')"><span class="icon">💰</span><span class="label">Fund</span></button>
+    <button class="nav-btn" data-page="expense" onclick="goTo('expense')"><span class="icon">🧾</span><span class="label">Expense</span></button>
+    <button class="nav-btn" data-page="history" onclick="goTo('history')"><span class="icon">📋</span><span class="label">History</span></button>
+    <button class="nav-btn" data-page="members" onclick="goTo('members')"><span class="icon">👥</span><span class="label">Members</span></button>
+  </nav>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, push, onValue, remove, set, get, update }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+let db=null, currentUser=null, currentRole=null, isAdmin=false;
+let allFunds=[], allExpenses=[], allMembers={}, allLeaves=[], allHandovers=[], allDisputes={};
+// allMembers: { name, role, status:'pending'|'active'|'left', joinedAt, isAdmin?, leftAt? }
+
+const fmt  = n=>"₹"+Number(n).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtD = iso=>new Date(iso).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
+const fmtT = iso=>new Date(iso).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
+const daysBetween=(a,b)=>Math.max(1,Math.round((new Date(b)-new Date(a))/(1000*60*60*24)));
+
+function toast(msg,type="ok"){
+  const el=document.getElementById("toast");
+  el.textContent=msg;el.className="toast "+type;el.style.display="block";
+  setTimeout(()=>el.style.display="none",2800);
+}
+
+function activeClubMembers(){
+  return Object.values(allMembers).filter(m=>m.role==="member"&&(m.status==="active"));
+}
+function approvedMembers(){
+  return Object.values(allMembers).filter(m=>m.status==="active"||m.status==="left");
+}
+function memberLeaveDays(name){
+  return allLeaves.filter(l=>l.member===name&&l.days>0).reduce((s,l)=>s+Number(l.days),0);
+}
+
+// Net cash holdings per person
+function calcHoldings(){
+  const holdings={};
+  // funds received
+  allFunds.forEach(f=>{
+    const holder=f.handedTo||f.member||f.donor||"Unknown";
+    holdings[holder]=(holdings[holder]||0)+Number(f.amount);
+  });
+  // handovers: from person loses, to person gains
+  allHandovers.forEach(h=>{
+    holdings[h.from]=(holdings[h.from]||0)-Number(h.amount);
+    holdings[h.to]=(holdings[h.to]||0)+Number(h.amount);
+  });
+  // expenses reduce the cash held by whoever paid (paidBy)
+  allExpenses.forEach(e=>{
+    const payer=e.paidBy||"Unknown";
+    holdings[payer]=(holdings[payer]||0)-Number(e.amount);
+  });
+  return holdings;
+}
+
+function calcLiabilities(){
+  // Only regular expenses affect member liabilities; ghost expenses do not
+  const regularExp=allExpenses.filter(e=>e.expType!=="ghost");
+  const members=Object.values(allMembers).filter(m=>m.role==="member"&&(m.status==="active"||m.status==="left"));
+  const totalExp=regularExp.reduce((s,e)=>s+Number(e.amount),0);
+  if(!members.length)return{};
+  const allDates=[...allFunds,...allExpenses].map(t=>t.ts).filter(Boolean);
+  let totalDays=30;
+  if(allDates.length>1){const span=Math.max(...allDates)-Math.min(...allDates);totalDays=Math.max(1,Math.round(span/(1000*60*60*24)));}
+  const weights={};let totalWeight=0;
+  members.forEach(m=>{const w=Math.max(0,totalDays-memberLeaveDays(m.name));weights[m.name]=w;totalWeight+=w;});
+  const liab={};
+  members.forEach(m=>{liab[m.name]=totalWeight>0?(totalExp*weights[m.name]/totalWeight):0;});
+  return liab;
+}
+
+// ── Firebase ──────────────────────────────────────────────────────────────────
+let _renderTimer=null;
+function scheduleRender(){
+  if(_renderTimer)clearTimeout(_renderTimer);
+  _renderTimer=setTimeout(()=>{ _renderTimer=null; renderAll(); },120);
+}
+
+async function fetchAllData(){
+  if(!db)return;
+  try{
+    const [fS,eS,mS,lS,hS,dS,rS,aS]=await Promise.all([
+      get(ref(db,"funds")),
+      get(ref(db,"expenses")),
+      get(ref(db,"members")),
+      get(ref(db,"leaves")),
+      get(ref(db,"handovers")),
+      get(ref(db,"disputes")),
+      get(ref(db,"resetRequests")),
+      get(ref(db,"adminTransferRequests"))
+    ]);
+    // Update all data arrays
+    allFunds=[];    fS.forEach(c=>allFunds.push({id:c.key,...c.val()}));    allFunds.sort((a,b)=>b.ts-a.ts);
+    allExpenses=[]; eS.forEach(c=>allExpenses.push({id:c.key,...c.val()})); allExpenses.sort((a,b)=>b.ts-a.ts);
+    allMembers={}; mS.forEach(c=>{const v=c.val();allMembers[v.name]=v;});
+    allLeaves=[];  lS.forEach(c=>allLeaves.push({id:c.key,...c.val()}));
+    allHandovers=[];hS.forEach(c=>allHandovers.push({id:c.key,...c.val()}));
+    allDisputes={}; dS.forEach(c=>{const v=c.val();if(!allDisputes[v.txId])allDisputes[v.txId]=[];allDisputes[v.txId].push({id:c.key,...v});});
+    allResetRequests={}; rS.forEach(c=>{const v=c.val();allResetRequests[c.key]=v;});
+    allAdminTransferRequests={}; aS.forEach(c=>{const v=c.val();allAdminTransferRequests[c.key]=v;});
+    // Always update member status flags
+    const me=allMembers[currentUser];
+    if(me){ isAdmin=!!me.isAdmin; currentRole=me.role; }
+    // Always render first
+    renderAll();
+    // Then check screen routing
+    checkCurrentUserStatus();
+  }catch(e){ console.error("fetchAllData error:",e); toast("Sync error — check connection","err"); }
+}
+
+function initFirebase(dbUrl){
+  const app=initializeApp({databaseURL:dbUrl},"teaclub");
+  db=getDatabase(app);
+  // Initial fetch
+  fetchAllData();
+  // Auto-refresh every 10 seconds so changes from other members appear
+  setInterval(fetchAllData, 10000);
+}
+
+function hideAllScreens(){
+  ["config-screen","login-screen","pending-screen","loading-screen","app"].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.display="none";
+  });
+}
+function checkCurrentUserStatus(){
+  if(!currentUser)return;
+  const me=allMembers[currentUser];
+  if(!me){
+    if(Object.keys(allMembers).length>0){
+      localStorage.removeItem("teaclub_user");localStorage.removeItem("teaclub_role");
+      hideAllScreens();
+      document.getElementById("login-screen").style.display="block";
+      currentUser=null;
+    }
+    return;
+  }
+  const appVisible=document.getElementById("app").style.display!=="none";
+  if(me.status==="pending"){
+    hideAllScreens();
+    document.getElementById("pending-screen").style.display="block";
+    document.getElementById("pending-name").textContent=currentUser;
+  } else if(me.status==="active"||me.status==="left"){
+    isAdmin=!!me.isAdmin;
+    currentRole=me.role;
+    localStorage.setItem("teaclub_role",currentRole);
+    if(!appVisible){
+      // First time showing the app — run full UI setup
+      hideAllScreens();
+      document.getElementById("app").style.display="block";
+      updateRoleUI(); // sets header text, debug button etc — does NOT call renderAll
+    }
+    // If app already visible, renderAll already called above in fetchAllData
+  }
+}
+
+async function registerMember(name,role){
+  if(!db)return;
+  const snap=await get(ref(db,"members"));
+  const isEmpty=!snap.exists()||Object.keys(snap.val()||{}).length===0;
+  const existing=await get(ref(db,"members/"+name));
+  if(existing.exists()){
+    // already registered — just load
+    checkCurrentUserStatus();
+    return;
+  }
+  if(isEmpty){
+    // First user → auto-approve as admin
+    await set(ref(db,"members/"+name),{name,role,status:"active",isAdmin:true,joinedAt:new Date().toISOString()});
+    toast("Welcome! You are the Club Admin ☕");
+  } else {
+    // Subsequent users → pending
+    await set(ref(db,"members/"+name),{name,role,status:"pending",isAdmin:false,joinedAt:new Date().toISOString()});
+    document.getElementById("app").style.display="none";
+    document.getElementById("pending-screen").style.display="block";
+    document.getElementById("pending-name").textContent=name;
+  }
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function renderAll(){
+  if(!db)return; // don't render before Firebase is ready
+  const ss=document.getElementById("sync-status");
+  if(ss)ss.textContent="Synced "+new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
+  updateHistoryFilter();
+  renderDashboard();
+  renderFundPage();
+  renderExpenseList();
+  renderHistory();
+  renderMembers();
+  updateAdminAlert();
+  renderResetStatus();
+  renderAdminTransferAlert();
+  renderReclaimBtn();
+}
+
+function updateAdminAlert(){
+  const pending=Object.values(allMembers).filter(m=>m.status==="pending");
+  const el=document.getElementById("admin-alert");
+  if(!el)return;
+  if(isAdmin&&pending.length>0){
+    el.style.display="block";
+    document.getElementById("admin-alert-text").textContent=`${pending.length} member${pending.length>1?"s":""} waiting for approval`;
+  } else el.style.display="none";
+}
+
+function renderDashboard(){
+  const totalF=allFunds.reduce((s,f)=>s+Number(f.amount),0);
+  const totalE=allExpenses.reduce((s,e)=>s+Number(e.amount),0);
+  const bal=totalF-totalE;
+  document.getElementById("dash-balance").textContent=(bal<0?"−":"")+fmt(Math.abs(bal));
+  document.getElementById("dash-balance").style.color=bal>=0?"#f0ece4":"#f87171";
+  document.getElementById("dash-funds").textContent=fmt(totalF);
+  document.getElementById("dash-exp").textContent=fmt(totalE);
+  document.getElementById("dash-funds-count").textContent=allFunds.length+" entries";
+  document.getElementById("dash-exp-count").textContent=allExpenses.length+" entries";
+
+  if(currentRole==="member"&&allMembers[currentUser]?.status==="active"){
+    const myContrib=allFunds.filter(f=>f.member===currentUser&&f.fundType!=="angel").reduce((s,f)=>s+Number(f.amount),0);
+    const liab=calcLiabilities(); const myShare=liab[currentUser]||0;
+    const myBal=myContrib-myShare;
+    const holdings=calcHoldings(); const myHolding=holdings[currentUser]||0;
+    document.getElementById("my-account-card").style.display="block";
+    document.getElementById("handler-info-card").style.display="none";
+    document.getElementById("my-contrib").textContent=fmt(myContrib);
+    document.getElementById("my-share").textContent=fmt(myShare);
+    const holdEl=document.getElementById("my-holding");
+    holdEl.textContent=(myHolding<0?"−":"")+fmt(Math.abs(myHolding));
+    holdEl.style.color=myHolding>=0?"var(--blue)":"var(--red)";
+    const bEl=document.getElementById("my-balance-val");
+    bEl.textContent=(myBal<0?"−":"")+fmt(Math.abs(myBal));
+    bEl.style.color=myBal>=0?"var(--green)":"var(--red)";
+    document.getElementById("dash-fund-btn").style.display="";
+  } else if(currentRole==="handler"){
+    document.getElementById("my-account-card").style.display="none";
+    document.getElementById("handler-info-card").style.display="block";
+    document.getElementById("dash-fund-btn").style.display="none";
+  } else {
+    document.getElementById("my-account-card").style.display="none";
+    document.getElementById("handler-info-card").style.display="none";
+  }
+
+  const all=[...allFunds.map(f=>({...f,type:"fund"})),...allExpenses.map(e=>({...e,type:"expense"}))].sort((a,b)=>b.ts-a.ts).slice(0,6);
+  const el=document.getElementById("dash-recent");
+  el.innerHTML=all.length?all.map(tx=>txRowHTML(tx,false)).join("")+(allFunds.length+allExpenses.length>6?`<button class="btn-ghost" onclick="goTo('history')">View All →</button>`:""): `<div class="empty">No transactions yet</div>`;
+}
+
+function txIcon(tx){
+  if(tx.type==="fund"){
+    if(tx.fundType==="angel")return"👼";
+    return"💰";
+  }
+  if(tx.expType==="ghost")return"👻";
+  return"🧾";
+}
+function txLabel(tx){
+  if(tx.type==="fund"){
+    if(tx.fundType==="angel")return`Angel Fund (${tx.donor||"Guest"})`;
+    return tx.member;
+  }
+  return tx.category;
+}
+function txSub(tx){
+  if(tx.type==="fund"){
+    const holder=tx.handedTo?` · held by ${tx.handedTo}`:"";
+    return(tx.note||"Contribution")+holder+" · "+fmtD(tx.date);
+  }
+  return(tx.note||tx.paidBy)+" · "+fmtD(tx.date);
+}
+
+function txRowHTML(tx,showActions=true){
+  const isFund=tx.type==="fund";
+  const amtClr=isFund?"var(--green)":"var(--red)"; const sign=isFund?"+":"−";
+  const disputes=allDisputes[tx.id]||[];
+  const hasDispute=disputes.length>0;
+  const disputeUnresolved=disputes.some(d=>!d.resolved);
+  const specialBadge=tx.fundType==="angel"?`<span class="badge badge-angel">Angel</span>`:tx.expType==="ghost"?`<span class="badge badge-ghost">Ghost</span>`:"";
+  let actions="";
+  if(showActions){
+    actions=`<div class="tx-actions">
+      <button class="dispute-btn" onclick="openDisputeModal('${tx.id}','${tx.type}')">⚑ Dispute</button>
+      <button class="del-btn" onclick="deleteEntry('${isFund?"funds":"expenses"}','${tx.id}')">✕ Del</button>
+    </div>`;
+  }
+  const disputeFlag=disputeUnresolved?`<div class="dispute-flag">⚑ Dispute raised</div>`:"";
+  return `<div class="tx-row${disputeUnresolved?" disputed":""}">
+    <span class="tx-icon">${txIcon(tx)}</span>
+    <div class="tx-info">
+      <div class="tx-name">${txLabel(tx)} ${specialBadge}</div>
+      <div class="tx-sub">${txSub(tx)}</div>
+      ${disputeFlag}
+      ${actions}
+    </div>
+    <div class="tx-right"><div class="tx-amount" style="color:${amtClr}">${sign}${fmt(tx.amount)}</div></div>
+  </div>`;
+}
+
+function renderFundPage(){
+  // Cash holdings
+  const holdings=calcHoldings();
+  const hEl=document.getElementById("cash-holdings-summary");
+  if(hEl){
+    const names=Object.keys(holdings).filter(k=>holdings[k]!==0);
+    if(!names.length){hEl.innerHTML=`<div class="empty" style="padding:14px 0;">No cash holdings yet</div>`;}
+    else{
+      hEl.innerHTML=`<div class="cash-bar">`+
+        names.map(n=>`<div class="cash-bar-row"><span style="font-weight:700;">${n}</span><span style="color:var(--blue);font-weight:800;">${fmt(holdings[n])}</span></div>`).join("")+
+        `</div>`;
+    }
+  }
+  // Fund list
+  const el=document.getElementById("fund-list");if(!el)return;
+  el.innerHTML=allFunds.length?allFunds.slice(0,12).map(f=>txRowHTML({...f,type:"fund"})).join(""):`<div class="empty">No contributions yet</div>`;
+  // show/hide form
+  const isH=currentRole==="handler";
+  const fn=document.getElementById("fund-handler-notice");
+  const fw=document.getElementById("fund-form-wrap");
+  if(fn)fn.style.display=isH?"block":"none";
+  if(fw)fw.style.display=isH?"none":"block";
+}
+function populateHandedTo(){
+  const sel=document.getElementById("fund-handedto");if(!sel)return;
+  const names=Object.values(allMembers).filter(m=>m.status==="active").map(m=>m.name).sort();
+  const cur=sel.value;
+  sel.innerHTML=`<option value="">— Select cash holder —</option>`+names.map(n=>`<option value="${n}"${n===cur?" selected":""}>${n}</option>`).join("");
+  if(!sel.value&&currentUser&&names.includes(currentUser))sel.value=currentUser;
+}
+function renderExpenseList(){
+  const el=document.getElementById("exp-list");if(!el)return;
+  el.innerHTML=allExpenses.length?allExpenses.slice(0,12).map(e=>txRowHTML({...e,type:"expense"})).join(""):`<div class="empty">No expenses yet</div>`;
+}
+function updateHistoryFilter(){
+  const sel=document.getElementById("history-filter");if(!sel)return;
+  const cur=sel.value;
+  const names=Object.keys(allMembers).sort();
+  sel.innerHTML=`<option value="All">All</option>`+names.map(m=>`<option${m===cur?" selected":""}>${m}</option>`).join("");
+}
+function renderHistory(){
+  const filter=document.getElementById("history-filter")?.value||"All";
+  let all=[...allFunds.map(f=>({...f,type:"fund"})),...allExpenses.map(e=>({...e,type:"expense"}))].sort((a,b)=>b.ts-a.ts);
+  if(filter!=="All")all=all.filter(t=>t.member===filter||t.paidBy===filter||t.donor===filter||t.handedTo===filter);
+  document.getElementById("history-count").textContent=all.length+" transactions";
+  const el=document.getElementById("history-list");
+  el.innerHTML=all.length?all.map(tx=>txRowHTML(tx)).join(""):`<div class="empty">No transactions</div>`;
+}
+
+function renderMembers(){
+  // Pending approvals (admin)
+  const pendingList=Object.values(allMembers).filter(m=>m.status==="pending");
+  const paSection=document.getElementById("pending-approvals-section");
+  const paList=document.getElementById("pending-approvals-list");
+  if(isAdmin&&pendingList.length>0){
+    paSection.style.display="block";
+    paList.innerHTML=pendingList.map(m=>`
+      <div class="member-card">
+        <div class="member-avatar pending">${m.name[0].toUpperCase()}</div>
+        <div class="member-info">
+          <div class="member-name-row">${m.name} <span class="badge badge-pending">Pending</span> <span class="badge badge-${m.role==="handler"?"handler":"member"}">${m.role==="handler"?"Handler":"Member"}</span></div>
+          <div class="member-sub">Requested ${fmtD(m.joinedAt)}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0;">
+          <button class="btn btn-green btn-sm" onclick="approveM('${m.name}')">✓ Approve</button>
+          <button class="btn btn-red btn-sm" onclick="rejectM('${m.name}')">✕ Reject</button>
+        </div>
+      </div>`).join("");
+  } else { if(paSection)paSection.style.display="none"; }
+
+  // My status bar
+  const me=allMembers[currentUser];
+  const msn=document.getElementById("my-status-name");
+  const msl=document.getElementById("my-status-label");
+  const msb=document.getElementById("my-status-btns");
+  if(msn)msn.textContent=currentUser||"";
+  if(me&&msl){
+    const roleBadge=me.role==="handler"?`<span class="badge badge-handler">Handler</span>`:`<span class="badge badge-member">Member</span>`;
+    const adminBadge=me.isAdmin?`<span class="badge badge-admin">Admin</span>`:"";
+    if(me.status==="left"){
+      msl.innerHTML=roleBadge+adminBadge+` <span class="badge badge-left">Left</span>`;
+      if(msb)msb.innerHTML=`<button class="btn btn-tea btn-sm" onclick="rejoinClub()">Re-join</button>`;
+    } else {
+      const onLeave=allLeaves.some(l=>l.member===currentUser&&!l.to);
+      if(onLeave){
+        msl.innerHTML=roleBadge+adminBadge+` <span class="badge badge-leave">On Leave</span>`;
+        if(msb)msb.innerHTML=`<button class="btn btn-tea btn-sm" onclick="endLeave()">Mark Return</button>`;
+      } else {
+        msl.innerHTML=roleBadge+adminBadge+` <span class="badge badge-active">Active</span>`;
+        let btns=`<button class="btn btn-orange btn-sm" onclick="openLeaveModal()">Mark Leave</button>`;
+        btns+=`<button class="btn btn-red btn-sm" onclick="openLeaveClubModal()">Exit Club</button>`;
+        if(isAdmin) btns+=`<button class="btn btn-purple btn-sm" style="margin-top:4px;" onclick="openAdminTransferModal()">👑 Transfer Admin</button>`;
+        if(msb)msb.innerHTML=btns;
+      }
+    }
+  }
+
+  // Member list
+  const el=document.getElementById("members-list");if(!el)return;
+  const all=Object.values(allMembers).sort((a,b)=>a.name.localeCompare(b.name));
+  const members=all.filter(m=>m.role==="member");
+  const handlers=all.filter(m=>m.role==="handler");
+  let html="";
+  if(members.length){html+=`<div class="sub-heading" style="margin-top:4px;">👤 Club Members</div>`+members.map(memberCardHTML).join("");}
+  if(handlers.length){html+=`<div class="sub-heading">🧾 Expense Handlers</div>`+handlers.map(memberCardHTML).join("");}
+  el.innerHTML=html||`<div class="empty">No members</div>`;
+
+  // Liability
+  const liab=calcLiabilities();
+  const lEl=document.getElementById("liability-summary");if(!lEl)return;
+  const mems=Object.values(allMembers).filter(m=>m.role==="member"&&m.status!=="pending").sort((a,b)=>a.name.localeCompare(b.name));
+  if(!mems.length){lEl.innerHTML=`<div class="empty">No members</div>`;return;}
+  lEl.innerHTML=`<div class="liability-card">`+mems.map(m=>{
+    const contrib=allFunds.filter(f=>f.member===m.name&&f.fundType!=="angel").reduce((s,f)=>s+Number(f.amount),0);
+    const share=liab[m.name]||0;const bal=contrib-share;
+    const leaveDays=memberLeaveDays(m.name);
+    const balSign=bal>0?"+":bal<0?"−":"";
+    return `<div class="liability-row"><div><div style="font-size:12px;font-weight:700;">${m.name}${leaveDays>0?` <span style="color:var(--orange);font-size:10px;">(${leaveDays}d leave)</span>`:""}</div><div style="font-size:10px;color:var(--muted);">Paid ${fmt(contrib)} · Share ${fmt(share)}</div></div><span style="font-weight:900;font-size:13px;color:${bal>=0?"var(--green)":"var(--red)"}">${balSign}${fmt(Math.abs(bal))}</span></div>`;
+  }).join("")+`</div>`;
+
+  // Cat summary
+  const cats=["Tea/Coffee","Snacks","Sugar & Milk","Cups & Supplies","Other"];
+  const customCats=[...new Set(allExpenses.map(e=>e.category).filter(c=>!cats.includes(c)))];
+  const catEl=document.getElementById("cat-summary");if(!catEl)return;
+  const rows=[...cats,...customCats].map(cat=>{
+    const total=allExpenses.filter(e=>e.category===cat).reduce((s,e)=>s+Number(e.amount),0);
+    if(!total)return"";
+    const ghostTotal=allExpenses.filter(e=>e.category===cat&&e.expType==="ghost").reduce((s,e)=>s+Number(e.amount),0);
+    return `<div style="display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid var(--border);font-size:12px;"><span>${cat}${ghostTotal>0?` <span class="badge badge-ghost">incl. ghost ${fmt(ghostTotal)}</span>`:""}</span><span style="color:var(--red);font-weight:800;">${fmt(total)}</span></div>`;
+  }).join("");
+  catEl.innerHTML=`<div style="background:var(--card2);border-radius:13px;padding:13px 15px;">${rows||'<div style="color:var(--muted);font-size:12px;">No expenses yet</div>'}</div>`;
+  renderReclaimBtn();
+}
+
+function memberCardHTML(m){
+  const onLeave=allLeaves.some(l=>l.member===m.name&&!l.to);
+  const leaveDays=memberLeaveDays(m.name);
+  const isH=m.role==="handler";
+  let badge=`<span class="badge badge-active">Active</span>`;
+  if(m.status==="pending")badge=`<span class="badge badge-pending">Pending</span>`;
+  else if(m.status==="left")badge=`<span class="badge badge-left">Left</span>`;
+  else if(onLeave)badge=`<span class="badge badge-leave">On Leave</span>`;
+  const adminB=m.isAdmin?`<span class="badge badge-admin">Admin</span>`:"";
+  const sub=`Joined ${fmtD(m.joinedAt)}`+(leaveDays>0?` · ${leaveDays}d leave`:"")+(m.status==="left"&&m.leftAt?` · Left ${fmtD(m.leftAt)}`:"");
+  return `<div class="member-card"><div class="member-avatar${isH?" handler":""}">${m.name[0].toUpperCase()}</div><div class="member-info"><div class="member-name-row">${m.name} ${badge} ${adminB}</div><div class="member-sub">${sub}</div></div></div>`;
+}
+
+// ── Actions ───────────────────────────────────────────────────────────────────
+let selectedFundType="regular";
+window.selectFundType=function(t){
+  selectedFundType=t;
+  document.getElementById("ftype-regular-btn").className="role-opt"+(t==="regular"?" selected":"");
+  document.getElementById("ftype-angel-btn").className="role-opt"+(t==="angel"?" selected":"");
+  document.getElementById("angel-info").style.display=t==="angel"?"block":"none";
+  document.getElementById("fund-from-label").textContent=t==="angel"?"Recorded By":"From (Member)";
+  document.getElementById("fund-member-display").style.display=t==="angel"?"block":"block";
+  document.getElementById("angel-from-wrap").style.display=t==="angel"?"block":"none";
+};
+
+let selectedExpType="regular";
+window.selectExpType=function(t){
+  selectedExpType=t;
+  document.getElementById("etype-regular-btn").className="role-opt"+(t==="regular"?" selected":"");
+  document.getElementById("etype-ghost-btn").className="role-opt"+(t==="ghost"?" selected":"");
+  document.getElementById("ghost-info").style.display=t==="ghost"?"block":"none";
+};
+
+window.addFund=async function(){
+  if(currentRole==="handler"){toast("Handlers cannot add funds","err");return;}
+  // Capture ALL values immediately before any async operation
+  const amount=parseFloat(document.getElementById("fund-amount").value);
+  if(!amount||amount<=0){toast("Enter a valid amount","err");return;}
+  const handedTo=document.getElementById("fund-handedto").value;
+  if(!handedTo){toast("Please select who is holding this cash","err");return;}
+  const note=document.getElementById("fund-note").value.trim();
+  const fundType=selectedFundType; // capture before any reset
+  const donor=fundType==="angel"?(document.getElementById("angel-donor").value.trim()||"Guest"):"";
+  const entry={
+    amount,handedTo,note,
+    member:currentUser,
+    date:new Date().toISOString(),
+    ts:Date.now()*10000+Math.floor(Math.random()*9999),
+    fundType
+  };
+  if(fundType==="angel"){entry.donor=donor;}
+  try{
+    await push(ref(db,"funds"),entry);
+    // Only clear amount, note and donor — keep handedTo selection for convenience
+    document.getElementById("fund-amount").value="";
+    document.getElementById("fund-note").value="";
+    if(document.getElementById("angel-donor"))document.getElementById("angel-donor").value="";
+    await fetchAllData();
+    toast(fundType==="angel"?`👼 Angel fund of ${fmt(amount)} recorded!`:`✓ ${fmt(amount)} added — held by ${handedTo}`);
+  }catch(e){toast("Error: "+e.message,"err");}
+};
+
+window.addExpense=async function(){
+  let category=document.getElementById("exp-category").value;
+  if(category==="Other"){const cv=document.getElementById("exp-custom-category").value.trim();if(!cv){toast("Specify category","err");return;}category=cv;}
+  const amount=parseFloat(document.getElementById("exp-amount").value);
+  if(!amount||amount<=0){toast("Enter a valid amount","err");return;}
+  const note=document.getElementById("exp-note").value.trim();
+  // Capture expType NOW before any reset
+  const expType=selectedExpType;
+  // Unique ts: ms + random 4-digit suffix to guarantee uniqueness across rapid entries
+  const uniqueTs=Date.now()*10000+Math.floor(Math.random()*9999);
+  try{
+    await push(ref(db,"expenses"),{category,amount,paidBy:currentUser,note,date:new Date().toISOString(),ts:uniqueTs,expType});
+    // Reset form fields only — do NOT call selectExpType (avoids unnecessary re-render)
+    document.getElementById("exp-amount").value="";
+    document.getElementById("exp-note").value="";
+    document.getElementById("exp-custom-category").value="";
+    document.getElementById("exp-category").value="Tea/Coffee";
+    document.getElementById("custom-category-wrap").style.display="none";
+    selectedExpType="regular";
+    document.getElementById("etype-regular-btn").className="role-opt selected";
+    document.getElementById("etype-ghost-btn").className="role-opt";
+    document.getElementById("ghost-info").style.display="none";
+    await fetchAllData();
+    toast(expType==="ghost"?"👻 Ghost expense recorded":"✓ Expense recorded!");
+  }catch(e){toast("Error: "+e.message,"err");}
+};
+
+window.deleteEntry=async function(path,id){
+  if(!confirm("Delete this entry?"))return;
+  try{await remove(ref(db,path+"/"+id));await fetchAllData();toast("Deleted");}
+  catch(e){toast("Error: "+e.message,"err");}
+};
+window.toggleCustomCategory=function(){
+  document.getElementById("custom-category-wrap").style.display=document.getElementById("exp-category").value==="Other"?"block":"none";
+};
+
+// ── Admin ─────────────────────────────────────────────────────────────────────
+window.approveM=async function(name){
+  try{
+    const snap=await get(ref(db,"members/"+name));
+    if(snap.exists())await update(ref(db,"members/"+name),{status:"active"});
+    toast(`${name} approved!`);
+  }catch(e){toast("Error: "+e.message,"err");}
+};
+window.rejectM=async function(name){
+  if(!confirm(`Reject ${name}'s request?`))return;
+  try{await remove(ref(db,"members/"+name));toast(`${name} rejected`);}
+  catch(e){toast("Error: "+e.message,"err");}
+};
+
+// ── Leave ─────────────────────────────────────────────────────────────────────
+window.openLeaveModal=function(){
+  const today=new Date().toISOString().split("T")[0];
+  document.getElementById("modal-content").innerHTML=`
+    <div class="modal-title">🌴 Mark Leave</div>
+    <div class="info-box">Every leave day is excluded from your expense share. Even a single day off is counted.</div>
+    <div class="field-label">From</div><input type="date" id="leave-from" value="${today}"/>
+    <div class="field-label">To (optional — fill on return)</div><input type="date" id="leave-to"/>
+    <div style="font-size:10px;color:var(--muted);margin-top:5px;">Leave "To" blank to mark start now; fill when you return.</div>
+    <button class="btn btn-orange btn-full" onclick="submitLeave()">Mark Leave</button>`;
+  document.getElementById("modal-overlay").style.display="flex";
+};
+window.submitLeave=async function(){
+  const from=document.getElementById("leave-from").value;
+  const to=document.getElementById("leave-to").value;
+  if(!from){toast("Enter start date","err");return;}
+  const days=to?daysBetween(from,to):0;
+  try{
+    await push(ref(db,"leaves"),{member:currentUser,from,to:to||null,days,ts:Date.now()});
+    closeModal();
+    toast(to?`Leave of ${days} day${days!==1?"s":""} recorded`:"Leave started");
+  }catch(e){toast("Error: "+e.message,"err");}
+};
+window.endLeave=async function(){
+  const openLeave=allLeaves.find(l=>l.member===currentUser&&!l.to);
+  if(!openLeave)return;
+  const today=new Date().toISOString().split("T")[0];
+  const days=daysBetween(openLeave.from,today);
+  try{
+    await set(ref(db,"leaves/"+openLeave.id),{...openLeave,to:today,days});
+    toast(`Return marked · ${days} day${days!==1?"s":""} leave`);
+  }catch(e){toast("Error: "+e.message,"err");}
+};
+
+// ── Handover ──────────────────────────────────────────────────────────────────
+window.openHandoverModal=function(){
+  const names=Object.values(allMembers).filter(m=>m.status==="active").map(m=>m.name).sort();
+  document.getElementById("modal-content").innerHTML=`
+    <div class="modal-title">↔ Record Cash Handover</div>
+    <div class="info-box">Use this when one member physically hands cash to another.</div>
+    <div class="field-label">From (current holder)</div>
+    <select id="ho-from">${names.map(n=>`<option${n===currentUser?" selected":""}>${n}</option>`).join("")}</select>
+    <div class="field-label">To (new holder)</div>
+    <select id="ho-to">${names.map(n=>`<option>`+n+`</option>`).join("")}</select>
+    <div class="field-label">Amount (₹)</div>
+    <input type="number" id="ho-amount" placeholder="0.00" min="1"/>
+    <div class="field-label">Note (optional)</div>
+    <input type="text" id="ho-note" placeholder="e.g. Handed over at office"/>
+    <button class="btn btn-blue btn-full" onclick="submitHandover()">Record Handover</button>`;
+  document.getElementById("modal-overlay").style.display="flex";
+};
+window.submitHandover=async function(){
+  const from=document.getElementById("ho-from").value;
+  const to=document.getElementById("ho-to").value;
+  const amount=parseFloat(document.getElementById("ho-amount").value);
+  const note=document.getElementById("ho-note").value.trim();
+  if(from===to){toast("From and To must be different","err");return;}
+  if(!amount||amount<=0){toast("Enter amount","err");return;}
+  try{
+    await push(ref(db,"handovers"),{from,to,amount,note,date:new Date().toISOString(),ts:Date.now(),recordedBy:currentUser});
+    await fetchAllData();
+    closeModal();toast(`Handover of ${fmt(amount)} from ${from} to ${to} recorded`);
+  }catch(e){toast("Error: "+e.message,"err");}
+};
+
+// ── Disputes ──────────────────────────────────────────────────────────────────
+window.openDisputeModal=function(txId,txType){
+  const disputes=allDisputes[txId]||[];
+  const resolved=disputes.some(d=>d.resolved);
+  let commentsHTML=disputes.length?disputes.map(d=>`
+    <div class="comment-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span class="comment-author">${d.raisedBy}</span>
+        ${d.resolved?`<span class="badge badge-active">Resolved</span>`:`<span class="badge badge-pending">Open</span>`}
+      </div>
+      <div class="comment-text">${d.reason}</div>
+      ${d.comments?d.comments.map(c=>`<div style="margin-top:5px;padding:5px 8px;background:#0f1117;border-radius:6px;"><span style="font-size:10px;color:var(--tea);font-weight:700;">${c.author}:</span> <span style="font-size:11px;">${c.text}</span></div>`).join(""):""}
+      ${isAdmin&&!d.resolved?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;"><button class="btn btn-green btn-sm" style="width:100%;" onclick="resolveDispute('${d.id}','${txId}')">✓ Resolve</button><button class="btn btn-red btn-sm" style="width:100%;" onclick="adminDeleteDisputedEntry('${d.txType}','${txId}','${d.id}')">🗑 Delete Entry</button></div>`:""}
+    </div>`).join(""):`<div class="empty" style="padding:14px 0;">No disputes yet</div>`;
+  document.getElementById("modal-content").innerHTML=`
+    <div class="modal-title">⚑ Disputes for Transaction</div>
+    ${commentsHTML}
+    ${!resolved?`
+    <div class="sub-heading">Add Comment / Raise Dispute</div>
+    <textarea id="dispute-text" placeholder="Describe the issue or add a comment…"></textarea>
+    <button class="btn btn-yellow btn-full" onclick="submitDispute('${txId}','${txType}')">Submit</button>`:""}`;
+  document.getElementById("modal-overlay").style.display="flex";
+};
+window.submitDispute=async function(txId,txType){
+  const reason=document.getElementById("dispute-text").value.trim();
+  if(!reason){toast("Please describe the issue","err");return;}
+  const existing=allDisputes[txId]||[];
+  if(existing.length>0&&!existing.some(d=>d.resolved)){
+    // Add comment to existing open dispute
+    const d=existing.find(dsp=>!dsp.resolved);
+    const comments=[...(d.comments||[]),{author:currentUser,text:reason,ts:Date.now()}];
+    try{await update(ref(db,"disputes/"+d.id),{comments});closeModal();toast("Comment added");}
+    catch(e){toast("Error: "+e.message,"err");}
+  } else {
+    try{
+      await push(ref(db,"disputes"),{txId,txType,reason,raisedBy:currentUser,date:new Date().toISOString(),ts:Date.now(),resolved:false,comments:[]});
+      closeModal();toast("Dispute raised — visible to all members");
+    }catch(e){toast("Error: "+e.message,"err");}
+  }
+};
+window.resolveDispute=async function(disputeId,txId){
+  if(!isAdmin){toast("Only admin can resolve disputes","err");return;}
+  try{await update(ref(db,"disputes/"+disputeId),{resolved:true,resolvedBy:currentUser,resolvedAt:new Date().toISOString()});closeModal();toast("Dispute resolved");}
+  catch(e){toast("Error: "+e.message,"err");}
+};
+
+window.adminDeleteDisputedEntry=async function(txType,txId,disputeId){
+  if(!isAdmin){toast("Only admin can do this","err");return;}
+  if(!confirm("Delete this transaction AND close the dispute?"))return;
+  try{
+    const path=txType==="fund"?"funds":"expenses";
+    await remove(ref(db,path+"/"+txId));
+    await update(ref(db,"disputes/"+disputeId),{resolved:true,resolvedBy:currentUser,resolvedAt:new Date().toISOString(),deletedEntry:true});
+    closeModal();toast("Entry deleted and dispute closed");
+  }catch(e){toast("Error: "+e.message,"err");}
+};
+
+// ── Leave Club ────────────────────────────────────────────────────────────────
+window.openLeaveClubModal=function(){
+  const liab=calcLiabilities();
+  const myContrib=allFunds.filter(f=>f.member===currentUser&&f.fundType!=="angel").reduce((s,f)=>s+Number(f.amount),0);
+  const myShare=liab[currentUser]||0;const myBal=myContrib-myShare;
+  document.getElementById("modal-content").innerHTML=`
+    <div class="modal-title">🚪 Leave Tea Club</div>
+    <div class="warn-box">You will be marked inactive and excluded from future expenses.</div>
+    <div class="liability-card" style="margin-bottom:12px;">
+      <div class="liability-row" style="border-top:none;"><span style="color:var(--muted);">Contributions</span><span style="color:var(--green);font-weight:800;">${fmt(myContrib)}</span></div>
+      <div class="liability-row"><span style="color:var(--muted);">Expense Share</span><span style="color:var(--red);font-weight:800;">${fmt(myShare)}</span></div>
+      <div class="liability-row"><span style="font-weight:800;">Balance</span><span style="font-weight:900;color:${myBal>=0?"var(--green)":"var(--red)"}">${fmt(myBal)}</span></div>
+    </div>
+    ${myBal>0?`<div class="info-box">💡 Positive balance ${fmt(myBal)} — settle with treasurer.</div>`:""}
+    ${myBal<0?`<div class="warn-box">⚠️ You owe ${fmt(Math.abs(myBal))} to the club.</div>`:""}
+    <button class="btn btn-red btn-full" onclick="confirmLeaveClub()">Confirm Leave</button>`;
+  document.getElementById("modal-overlay").style.display="flex";
+};
+window.confirmLeaveClub=async function(){
+  if(!confirm("Are you sure?"))return;
+  try{
+    const snap=await get(ref(db,"members/"+currentUser));
+    if(snap.exists())await set(ref(db,"members/"+currentUser),{...snap.val(),status:"left",leftAt:new Date().toISOString()});
+    closeModal();toast("You have left the club.");
+  }catch(e){toast("Error: "+e.message,"err");}
+};
+window.rejoinClub=async function(){
+  try{
+    const snap=await get(ref(db,"members/"+currentUser));
+    if(snap.exists())await set(ref(db,"members/"+currentUser),{...snap.val(),status:"active",leftAt:null});
+    toast("Welcome back ☕");
+  }catch(e){toast("Error: "+e.message,"err");}
+};
+
+
+// ── FIX 4: Cash Holdings Modal (clickable balance card) ──────────────────────
+window.openCashHoldingsModal=function(){
+  const holdings=calcHoldings();
+  const names=Object.keys(holdings).sort();
+  const total=Object.values(holdings).reduce((s,v)=>s+v,0);
+  let rows=names.length?names.map(n=>{
+    const v=holdings[n];
+    return `<div class="liability-row"><span style="font-weight:700;">${n}</span><span style="font-weight:900;color:${v>=0?"var(--blue)":"var(--red)"};">${fmt(v)}</span></div>`;
+  }).join(""):`<div class="empty">No cash holdings recorded</div>`;
+  document.getElementById("modal-content").innerHTML=`
+    <div class="modal-title">💵 Cash Holdings Breakdown</div>
+    <div class="info-box">Shows net cash each member is currently holding after all handovers.</div>
+    <div class="liability-card">${rows}
+      <div class="liability-row" style="border-top:2px solid var(--border);margin-top:4px;">
+        <span style="font-weight:900;">Total</span>
+        <span style="font-weight:900;color:var(--green);">${fmt(total)}</span>
+      </div>
+    </div>`;
+  document.getElementById("modal-overlay").style.display="flex";
+};
+
+// ── FIX 3: Reset Transactions ─────────────────────────────────────────────────
+let allResetRequests={};
+function listenResetRequests(){ /* handled by fetchAllData */ }
+function renderResetStatus(){
+  const box=document.getElementById("reset-status-box");
+  const sec=document.getElementById("reset-section");
+  const alertDiv=document.getElementById("reset-alert");
+  const alertBody=document.getElementById("reset-alert-body");
+  const alertBtns=document.getElementById("reset-alert-btns");
+  if(sec){if(isAdmin){sec.style.display="block";}else{sec.style.display="none";}}
+  const active=Object.values(allResetRequests).find(r=>r.status==="pending");
+  if(!active){
+    if(alertDiv)alertDiv.style.display="none";
+    if(box)box.innerHTML="";
+    return;
+  }
+  const reqId=Object.keys(allResetRequests).find(k=>allResetRequests[k]===active);
+  const approvals=active.approvals||[];
+  const alreadyApproved=approvals.includes(currentUser);
+  const isRequester=currentUser===active.requestedBy;
+  const canApprove=!alreadyApproved&&!isRequester;
+  // Dashboard banner for ALL members
+  if(alertDiv){
+    alertDiv.style.display="block";
+    if(alertBody){
+      alertBody.innerHTML="<b>"+active.requestedBy+"</b> has requested a full transaction reset.<br>"
+        +"Reason: <b>"+(active.reason||"—")+"</b><br>"
+        +"Approvals so far: <b>"+approvals.length+"/2</b>"
+        +(approvals.length>0?" ("+approvals.join(", ")+")":"");
+    }
+    if(alertBtns){
+      let btns="";
+      if(canApprove){
+        btns+='<button class="btn btn-yellow btn-sm" style="width:100%;margin-bottom:6px;" onclick="approveReset(\''+reqId+'\')">✓ Approve This Reset</button>';
+      } else if(alreadyApproved){
+        btns+='<div style="font-size:11px;color:var(--green);font-weight:700;margin-bottom:4px;">✓ You have already approved</div>';
+      } else if(isRequester){
+        btns+='<div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Awaiting approvals from other members…</div>';
+      }
+      if(isAdmin&&approvals.length>=2){
+        btns+='<button class="btn btn-red btn-sm" style="width:100%;margin-bottom:6px;" onclick="executeReset(\''+reqId+'\')">⚠️ Execute Reset Now</button>';
+      }
+      if(isAdmin){
+        btns+='<button class="btn btn-muted btn-sm" style="width:100%;" onclick="cancelReset(\''+reqId+'\')">Cancel Request</button>';
+      }
+      alertBtns.innerHTML=btns;
+    }
+  }
+  // Members page detail box
+  if(box){
+    let html='<div class="warn-box" style="margin-bottom:8px;"><b>Reset requested by '+active.requestedBy+'</b><br>Reason: '+(active.reason||"—")+'<br>Approvals: '+approvals.length+'/2'+(approvals.length>0?' ('+approvals.join(', ')+')':"")+'</div>';
+    if(canApprove) html+='<button class="btn btn-yellow btn-sm" style="width:100%;margin-bottom:8px;" onclick="approveReset(\''+reqId+'\')">✓ I Approve This Reset</button>';
+    if(isAdmin&&approvals.length>=2) html+='<button class="btn btn-red btn-sm" style="width:100%;margin-bottom:8px;" onclick="executeReset(\''+reqId+'\')">⚠️ Execute Reset Now</button>';
+    if(isAdmin) html+='<button class="btn btn-muted btn-sm" style="width:100%;margin-bottom:8px;" onclick="cancelReset(\''+reqId+'\')">Cancel Request</button>';
+    box.innerHTML=html;
+  }
+}
+window.openResetModal=function(){
+  const active=Object.values(allResetRequests).find(r=>r.status==="pending");
+  if(active){toast("A reset request is already pending","err");return;}
+  document.getElementById("modal-content").innerHTML=`
+    <div class="modal-title">⚠️ Request Transaction Reset</div>
+    <div class="warn-box">This will delete ALL funds, expenses, handovers, leaves and disputes. Members and their roles will remain. Requires approval from at least 2 other members before you can execute.</div>
+    <div class="field-label">Reason for Reset</div>
+    <textarea id="reset-reason" placeholder="e.g. New financial year, fresh start…"></textarea>
+    <button class="btn btn-red btn-full" onclick="submitResetRequest()">Send Reset Request</button>`;
+  document.getElementById("modal-overlay").style.display="flex";
+};
+window.submitResetRequest=async function(){
+  const reason=document.getElementById("reset-reason").value.trim();
+  if(!reason){toast("Please give a reason","err");return;}
+  try{
+    await push(ref(db,"resetRequests"),{requestedBy:currentUser,reason,status:"pending",approvals:[],ts:Date.now(),date:new Date().toISOString()});
+    closeModal();toast("Reset request sent — awaiting 2 approvals");
+  }catch(e){toast("Error: "+e.message,"err");}
+};
+window.approveReset=async function(reqId){
+  if(!confirm("Confirm your approval for resetting all transactions?"))return;
+  const req=allResetRequests[reqId];
+  if(!req)return;
+  const approvals=[...(req.approvals||[])];
+  if(approvals.includes(currentUser)){toast("Already approved","err");return;}
+  approvals.push(currentUser);
+  try{
+    await update(ref(db,"resetRequests/"+reqId),{approvals});
+    toast("Approval recorded ("+approvals.length+"/2)");
+  }catch(e){toast("Error: "+e.message,"err");}
+};
+window.executeReset=async function(reqId){
+  const req=allResetRequests[reqId];
+  if(!req||(req.approvals||[]).length<2){toast("Need at least 2 approvals first","err");return;}
+  if(!confirm("FINAL CONFIRMATION: Delete ALL transactions? This cannot be undone."))return;
+  try{
+    await set(ref(db,"funds"),null);
+    await set(ref(db,"expenses"),null);
+    await set(ref(db,"handovers"),null);
+    await set(ref(db,"leaves"),null);
+    await set(ref(db,"disputes"),null);
+    await set(ref(db,"resetRequests"),null);
+    toast("✓ All transactions cleared. Fresh start!");
+  }catch(e){toast("Error: "+e.message,"err");}
+};
+window.cancelReset=async function(reqId){
+  try{await remove(ref(db,"resetRequests/"+reqId));toast("Reset request cancelled");}
+  catch(e){toast("Error: "+e.message,"err");}
+};
+
+// ── FIX 5: Admin Transfer ─────────────────────────────────────────────────────
+window.openAdminTransferModal=function(){
+  const actives=Object.values(allMembers).filter(m=>m.status==="active"&&m.name!==currentUser&&m.role==="member");
+  if(!actives.length){toast("No other active members available","err");return;}
+  const opts=actives.map(m=>`<option value="${m.name}">${m.name}</option>`).join("");
+  document.getElementById("modal-content").innerHTML=`
+    <div class="modal-title">👑 Transfer Admin Role</div>
+    <div class="field-label">Transfer To</div>
+    <select id="transfer-to">${opts}</select>
+    <div class="field-label">Transfer Type</div>
+    <div class="role-toggle" style="grid-template-columns:1fr 1fr;margin-bottom:4px;">
+      <button class="role-opt selected" id="tt-temp-btn" onclick="selectTransferType('temp')">⏱ Temporary</button>
+      <button class="role-opt" id="tt-perm-btn" onclick="selectTransferType('perm')">♾ Permanent</button>
+    </div>
+    <div id="tt-desc" style="font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.6;">Temporary: you can reclaim admin anytime. The other member acts as admin until you take it back.</div>
+    <div id="tt-perm-warn" style="display:none;" class="warn-box">Permanent transfer: you lose admin rights immediately. The new admin must accept. You cannot undo this without their cooperation.</div>
+    <div class="field-label">Reason (optional)</div>
+    <input type="text" id="transfer-reason" placeholder="e.g. Going on leave for a month"/>
+    <button class="btn btn-purple btn-full" onclick="submitAdminTransfer()">Transfer Admin Role</button>`;
+  document.getElementById("modal-overlay").style.display="flex";
+};
+let selectedTransferType="temp";
+window.selectTransferType=function(t){
+  selectedTransferType=t;
+  document.getElementById("tt-temp-btn").className="role-opt"+(t==="temp"?" selected":"");
+  document.getElementById("tt-perm-btn").className="role-opt"+(t==="perm"?" selected":"");
+  document.getElementById("tt-desc").textContent=t==="temp"?"Temporary: you can reclaim admin anytime. The other member acts as admin until you take it back.":"Permanent: you lose admin rights. The new admin must accept before it takes effect.";
+  document.getElementById("tt-perm-warn").style.display=t==="perm"?"block":"none";
+};
+window.submitAdminTransfer=async function(){
+  const to=document.getElementById("transfer-to").value;
+  const reason=document.getElementById("transfer-reason").value.trim();
+  if(!to){toast("Select a member","err");return;}
+  if(selectedTransferType==="temp"){
+    if(!confirm(`Grant temporary admin to ${to}? You can reclaim it anytime.`))return;
+    try{
+      // Give new admin rights, keep current as "tempAdmin" flag
+      await update(ref(db,"members/"+currentUser),{isAdmin:false,isTempAdmin:false,tempAdminGivenTo:to});
+      await update(ref(db,"members/"+to),{isAdmin:true,isTempAdmin:true,tempAdminFrom:currentUser});
+      closeModal();toast(`${to} is now temporary admin`);
+    }catch(e){toast("Error: "+e.message,"err");}
+  } else {
+    if(!confirm(`Permanently transfer admin to ${to}? They must accept.`))return;
+    try{
+      await push(ref(db,"adminTransferRequests"),{from:currentUser,to,reason,type:"permanent",status:"pending",ts:Date.now(),date:new Date().toISOString()});
+      closeModal();toast(`Transfer request sent to ${to} — awaiting acceptance`);
+    }catch(e){toast("Error: "+e.message,"err");}
+  }
+};
+// Reclaim temporary admin
+window.reclaimAdmin=async function(){
+  if(!confirm("Reclaim admin role?"))return;
+  const me=allMembers[currentUser];
+  const givenTo=me?.tempAdminGivenTo;
+  if(!givenTo){toast("No temporary admin found","err");return;}
+  try{
+    await update(ref(db,"members/"+currentUser),{isAdmin:true,isTempAdmin:false,tempAdminGivenTo:null});
+    await update(ref(db,"members/"+givenTo),{isAdmin:false,isTempAdmin:false,tempAdminFrom:null});
+    toast("Admin role reclaimed");
+  }catch(e){toast("Error: "+e.message,"err");}
+};
+// Accept permanent admin transfer
+window.acceptAdminTransfer=async function(reqId,fromName){
+  if(!confirm("Accept permanent admin role?"))return;
+  try{
+    await update(ref(db,"members/"+fromName),{isAdmin:false,isTempAdmin:false,tempAdminGivenTo:null});
+    await update(ref(db,"members/"+currentUser),{isAdmin:true,isTempAdmin:false});
+    await update(ref(db,"adminTransferRequests/"+reqId),{status:"accepted",acceptedAt:new Date().toISOString()});
+    toast("You are now the Admin ☕");
+  }catch(e){toast("Error: "+e.message,"err");}
+};
+
+// ── FIX 6: Fund Transfer for any member ──────────────────────────────────────
+window.openFundTransferModal=function(){
+  const holdings=calcHoldings();
+  const myHolding=holdings[currentUser]||0;
+  if(myHolding<=0){toast("You have no funds to transfer","err");return;}
+  const names=Object.values(allMembers).filter(m=>m.status==="active"&&m.name!==currentUser).map(m=>m.name).sort();
+  if(!names.length){toast("No other members available","err");return;}
+  document.getElementById("modal-content").innerHTML=`
+    <div class="modal-title">💸 Transfer My Funds</div>
+    <div class="info-box">You are currently holding <b>${fmt(myHolding)}</b>. Transfer part or all of it to another member.</div>
+    <div class="field-label">Transfer To</div>
+    <select id="ft-to">${names.map(n=>`<option>${n}</option>`).join("")}</select>
+    <div class="field-label">Amount (₹)</div>
+    <input type="number" id="ft-amount" placeholder="0.00" max="${myHolding}" min="1"/>
+    <div class="field-label">Note (optional)</div>
+    <input type="text" id="ft-note" placeholder="e.g. Handing over before leave"/>
+    <button class="btn btn-blue btn-full" onclick="submitFundTransfer()">Transfer Funds</button>`;
+  document.getElementById("modal-overlay").style.display="flex";
+};
+window.submitFundTransfer=async function(){
+  const to=document.getElementById("ft-to").value;
+  const amount=parseFloat(document.getElementById("ft-amount").value);
+  const note=document.getElementById("ft-note").value.trim();
+  const holdings=calcHoldings();
+  const myHolding=holdings[currentUser]||0;
+  if(!amount||amount<=0){toast("Enter a valid amount","err");return;}
+  if(amount>myHolding){toast(`You only hold ${fmt(myHolding)}`,"err");return;}
+  try{
+    await push(ref(db,"handovers"),{from:currentUser,to,amount,note,date:new Date().toISOString(),ts:Date.now()+Math.floor(Math.random()*999),recordedBy:currentUser});
+    await fetchAllData();
+    closeModal();toast(`${fmt(amount)} transferred to ${to}`);
+  }catch(e){toast("Error: "+e.message,"err");}
+};
+
+// ── Admin transfer request listener + pending transfer notifications ──────────
+let allAdminTransferRequests={};
+function listenAdminTransfers(){ /* handled by fetchAllData */ }
+function renderAdminTransferAlert(){
+  // Check if current user has a pending transfer request TO them
+  const pending=Object.entries(allAdminTransferRequests).find(([k,v])=>v.to===currentUser&&v.status==="pending");
+  const alertEl=document.getElementById("admin-alert");
+  const alertTxt=document.getElementById("admin-alert-text");
+  if(!alertEl||!alertTxt)return;
+  if(pending){
+    const [reqId,req]=pending;
+    alertEl.style.display="block";
+    alertTxt.innerHTML=`${req.from} wants to permanently transfer Admin role to you — <button onclick="acceptAdminTransfer('${reqId}','${req.from}')" style="background:none;border:none;color:var(--yellow);font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;text-decoration:underline;">Accept</button>`;
+  }
+}
+
+// ── Members page: show Reclaim Admin button if temp admin was given away ──────
+function renderReclaimBtn(){
+  const me=allMembers[currentUser];
+  if(!me)return;
+  const msb=document.getElementById("my-status-btns");
+  if(!msb)return;
+  if(!me.isAdmin&&me.tempAdminGivenTo){
+    // Original admin who gave away temp admin
+    const extra=`<button class="btn btn-purple btn-sm" onclick="reclaimAdmin()">👑 Reclaim Admin</button>`;
+    if(!msb.innerHTML.includes("Reclaim"))msb.innerHTML+=extra;
+  }
+}
+
+// ── Override renderMembers to wire in new features ────────────────────────────
+const _origRenderMembers=window.renderMembers||function(){};
+
+// ── Debug Panel ──────────────────────────────────────────────────────────────
+window.openDebugModal=async function(){
+  document.getElementById("modal-content").innerHTML='<div class="modal-title">🔧 Debug Panel</div><div class="spinner"></div>';
+  document.getElementById("modal-overlay").style.display="flex";
+  try{
+    // Read raw data directly from Firebase
+    const [fSnap,eSnap,mSnap]=await Promise.all([
+      get(ref(db,"funds")),
+      get(ref(db,"expenses")),
+      get(ref(db,"members"))
+    ]);
+    const rawFunds=[]; fSnap.forEach(c=>rawFunds.push({id:c.key,...c.val()}));
+    const rawExp=[];   eSnap.forEach(c=>rawExp.push({id:c.key,...c.val()}));
+    const rawMem=[];   mSnap.forEach(c=>rawMem.push(c.val()));
+
+    const totalF=rawFunds.reduce((s,f)=>s+Number(f.amount),0);
+    const totalE=rawExp.reduce((s,e)=>s+Number(e.amount),0);
+
+    const fundRows=rawFunds.length?rawFunds.map(f=>
+      `<div style="font-size:11px;padding:4px 0;border-top:1px solid var(--border);">
+        <span style="color:var(--green);font-weight:800;">+${fmt(f.amount)}</span>
+        · ${f.member||"?"} → <b>${f.handedTo||"?"}</b>
+        · ${f.fundType||"regular"}
+        · ${f.date?f.date.substring(0,10):"?"}
+      </div>`
+    ).join(""):"<div style='color:var(--muted);font-size:11px;'>No fund entries in Firebase</div>";
+
+    const expRows=rawExp.length?rawExp.map(e=>
+      `<div style="font-size:11px;padding:4px 0;border-top:1px solid var(--border);">
+        <span style="color:var(--red);font-weight:800;">-${fmt(e.amount)}</span>
+        · ${e.category||"?"}
+        · ${e.paidBy||"?"}
+        · ${e.expType||"regular"}
+        · ${e.date?e.date.substring(0,10):"?"}
+      </div>`
+    ).join(""):"<div style='color:var(--muted);font-size:11px;'>No expense entries in Firebase</div>";
+
+    document.getElementById("modal-content").innerHTML=`
+      <div class="modal-title">🔧 Debug Panel</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Data read directly from Firebase (raw, bypasses app state)</div>
+
+      <div style="background:var(--card);border-radius:10px;padding:12px;margin-bottom:10px;">
+        <div style="font-size:12px;font-weight:800;color:var(--green);margin-bottom:6px;">💰 Funds in Firebase: ${rawFunds.length} entries — Total: ${fmt(totalF)}</div>
+        ${fundRows}
+      </div>
+
+      <div style="background:var(--card);border-radius:10px;padding:12px;margin-bottom:10px;">
+        <div style="font-size:12px;font-weight:800;color:var(--red);margin-bottom:6px;">🧾 Expenses in Firebase: ${rawExp.length} entries — Total: ${fmt(totalE)}</div>
+        ${expRows}
+      </div>
+
+      <div style="background:var(--card);border-radius:10px;padding:12px;margin-bottom:10px;">
+        <div style="font-size:12px;font-weight:800;color:var(--tea);margin-bottom-6px;">📊 App State (allFunds/allExpenses arrays)</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;">
+          allFunds.length = <b style="color:var(--text);">${allFunds.length}</b> · sum = <b style="color:var(--green);">${fmt(allFunds.reduce((s,f)=>s+Number(f.amount),0))}</b><br>
+          allExpenses.length = <b style="color:var(--text);">${allExpenses.length}</b> · sum = <b style="color:var(--red);">${fmt(allExpenses.reduce((s,e)=>s+Number(e.amount),0))}</b><br>
+          currentUser = <b style="color:var(--text);">${currentUser}</b><br>
+          currentRole = <b style="color:var(--text);">${currentRole}</b><br>
+          isAdmin = <b style="color:var(--text);">${isAdmin}</b><br>
+          db connected = <b style="color:${db?"var(--green)":"var(--red)"};">${db?"YES":"NO"}</b>
+        </div>
+      </div>
+
+      <div style="background:var(--card);border-radius:10px;padding:12px;margin-bottom:14px;">
+        <div style="font-size:12px;font-weight:800;color:var(--blue);margin-bottom:6px;">🔍 Firebase vs App State Match?</div>
+        <div style="font-size:11px;">
+          Funds: Firebase=${rawFunds.length} vs App=${allFunds.length}
+          <span style="color:${rawFunds.length===allFunds.length?"var(--green)":"var(--red);font-weight:800"};">
+            ${rawFunds.length===allFunds.length?"✓ Match":"✗ MISMATCH — this is the bug"}
+          </span><br>
+          Expenses: Firebase=${rawExp.length} vs App=${allExpenses.length}
+          <span style="color:${rawExp.length===allExpenses.length?"var(--green)":"var(--red);font-weight:800"};">
+            ${rawExp.length===allExpenses.length?"✓ Match":"✗ MISMATCH — this is the bug"}
+          </span>
+        </div>
+      </div>
+
+      <button class="btn btn-tea btn-full" onclick="forceRefresh()">🔄 Force Refresh App State</button>`;
+  }catch(e){
+    document.getElementById("modal-content").innerHTML=`<div class="modal-title">🔧 Debug</div><div class="warn-box">Error reading Firebase: ${e.message}</div>`;
+  }
+};
+
+window.forceRefresh=async function(){
+  await fetchAllData();
+  closeModal();
+  toast("✓ Refreshed from Firebase");
+};
+
+// ── Modal ─────────────────────────────────────────────────────────────────────
+window.closeModal=function(e){
+  if(e&&e.target!==document.getElementById("modal-overlay"))return;
+  document.getElementById("modal-overlay").style.display="none";
+};
+
+// ── Nav ───────────────────────────────────────────────────────────────────────
+window.goTo=function(page){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+  document.getElementById("page-"+page)?.classList.add("active");
+  document.querySelector(`.nav-btn[data-page="${page}"]`)?.classList.add("active");
+  if(page==="history")renderHistory();
+  if(page==="members")renderMembers();
+  if(page==="fund"){renderFundPage();populateHandedTo();}
+};
+
+// ── Login ─────────────────────────────────────────────────────────────────────
+let selectedRole="member";
+window.selectRole=function(r){
+  selectedRole=r;
+  document.getElementById("role-member-btn").className="role-opt"+(r==="member"?" selected":"");
+  document.getElementById("role-handler-btn").className="role-opt"+(r==="handler"?" selected":"");
+  document.getElementById("role-desc").textContent=r==="member"?"Club Members contribute funds and share expenses.":"Expense Handlers record purchases only. No fund or liability.";
+};
+window.doLogin=async function(){
+  const name=document.getElementById("member-name-input").value.trim();
+  if(!name||name.length<2){toast("Enter your name","err");return;}
+  currentUser=name;currentRole=selectedRole;
+  localStorage.setItem("teaclub_user",currentUser);
+  localStorage.setItem("teaclub_role",currentRole);
+  document.getElementById("login-screen").style.display="none";
+  await registerMember(name,selectedRole);
+};
+window.checkApproval=function(){
+  const me=allMembers[currentUser];
+  if(me?.status==="active"){
+    hideAllScreens();
+    document.getElementById("app").style.display="block";
+    isAdmin=!!me.isAdmin;
+    currentRole=me.role;
+    localStorage.setItem("teaclub_role",currentRole);
+    updateRoleUI();
+  } else toast("Still pending — please wait for Admin approval","err");
+};
+window.logoutPending=function(){
+  localStorage.removeItem("teaclub_user");localStorage.removeItem("teaclub_role");
+  document.getElementById("pending-screen").style.display="none";
+  document.getElementById("login-screen").style.display="block";
+};
+window.showConfig=function(){
+  document.getElementById("login-screen").style.display="none";
+  document.getElementById("config-screen").style.display="block";
+};
+window.saveFirebaseConfig=function(){
+  const url=document.getElementById("db-url-input").value.trim();
+  if(!url.startsWith("https://")){alert("Enter a valid Firebase URL.");return;}
+  localStorage.setItem("teaclub_firebase_url",url);
+  document.getElementById("config-screen").style.display="none";
+  initFirebase(url);
+  document.getElementById("login-screen").style.display="block";
+};
+window.dismissInstall=function(){
+  localStorage.setItem("teaclub_install_dismissed","1");
+  document.getElementById("install-hint").style.display="none";
+};
+
+function updateRoleUI(){
+  const me=allMembers[currentUser];
+  isAdmin=!!me?.isAdmin;
+  currentRole=me?.role||currentRole;
+  document.getElementById("header-sub").textContent=`${currentUser} · ${currentRole==="handler"?"Handler":"Member"}${isAdmin?" · Admin":""}`;
+  const dbw=document.getElementById("debug-btn-wrap");
+  if(dbw)dbw.style.display=isAdmin?"block":"none";
+  // Monitor Firebase connection state
+  onValue(ref(db,".info/connected"),snap=>{
+    const connected=snap.val();
+    const hdr=document.getElementById("header-sub");
+    if(hdr){
+      const base=`${currentUser} · ${currentRole==="handler"?"Handler":"Member"}${isAdmin?" · Admin":""}`;
+      hdr.textContent=connected?base:base+" · ⚠️ Offline";
+      hdr.style.color=connected?"":"#f87171";
+    }
+  });
+  document.getElementById("fund-member-display").textContent=currentUser;
+  document.getElementById("exp-paidby-display").textContent=currentUser;
+  document.getElementById("my-status-name").textContent=currentUser;
+  if(!localStorage.getItem("teaclub_install_dismissed")&&!window.matchMedia("(display-mode:standalone)").matches)
+    document.getElementById("install-hint").style.display="block";
+  // renderAll is called by fetchAllData — not here to avoid double render
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+(function boot(){
+  const savedUrl=localStorage.getItem("teaclub_firebase_url");
+  const savedUser=localStorage.getItem("teaclub_user");
+  const savedRole=localStorage.getItem("teaclub_role");
+  if(!savedUrl){document.getElementById("config-screen").style.display="block";return;}
+  if(savedUser&&savedUser.length>=2){
+    // Show loading spinner while Firebase connects
+    currentUser=savedUser;currentRole=savedRole||"member";
+    document.getElementById("loading-screen").style.display="block";
+    document.getElementById("pending-name").textContent=savedUser;
+  } else {
+    // No saved user — show login after Firebase connects
+    document.getElementById("login-screen").style.display="block";
+  }
+  initFirebase(savedUrl);
+})();
+</script>
+</body>
+</html>
